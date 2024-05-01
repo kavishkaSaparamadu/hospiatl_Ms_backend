@@ -1,19 +1,19 @@
-const router= require("express").Router();
-const pateint = require("../models/hospital");
-let Pateint = require("../models/hospital");
+const router = require("express").Router();
+let Pateint = require('../models/pateint');
 
-http://localhost:8070/pateint/add
+
 
 router.route("/add").post((req,res) =>{
 
     
     const name =req.body.name;
-    const age = Number(req.body.age);
+    const age =(req.body.age);
     const gender =req.body.gender;
     const address =req.body.address;
     const disease =req.body.disease;
-    const contac =req.body.contac;
+    
     const email=req.body.email;
+    const password=req.body.password;
 
     const newPateint = new Pateint({
          
@@ -22,8 +22,8 @@ router.route("/add").post((req,res) =>{
             gender,
             address,
             disease,
-            contac,
-            email
+            email,
+            password
 
     })
 
@@ -34,7 +34,7 @@ router.route("/add").post((req,res) =>{
     })
 
 })
-http://localhost:8070/pateint
+
 
 router.route("/").get((req,res)=>{
     pateint.find().then((pateint)=>{
@@ -44,10 +44,10 @@ router.route("/").get((req,res)=>{
     })
 })
 
-htt://localhost:8070/pateint/update/5fuddhsjhdjshd
+
 router.route("/update/:pateintid").put(async(req,res)=>{
     let userId =req.params.pateintid;
-    const {name, age , gender, address, disease,contac,email}= req.body;
+    const {name ,age, gender, address, disease,email}= req.body;
 
     const updatePateint ={
         name,
@@ -55,12 +55,11 @@ router.route("/update/:pateintid").put(async(req,res)=>{
         gender,
         address,
         disease,
-        contac,
         email
     }
 
     const update = await Pateint.findByIdAndUpdate(userId,updatePateint)
-    .then(()=>{
+    (()=>{
 
         res.status(200).send({status: "user update",user: update})
    
@@ -69,8 +68,6 @@ router.route("/update/:pateintid").put(async(req,res)=>{
     })
 
 })
-
-http://localhost:8070/pateint/delete/6vgsggsa
 
 router.route("/delete/:pateintid").delete(async (req,res)=>{
     let userId = req.params.pateintid;
@@ -92,5 +89,14 @@ router.route("/get/:pateintid").get(async(req,res)=>{
     
   })
 })
-
+router.route("/patients").get((req, res) => {
+    Pateint.find()
+        .then((patients) => {
+            res.json(patients); // Return the array of patients as JSON
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: "An error occurred while retrieving patients" });
+        });
+});
 module.exports = router;
