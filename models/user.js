@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userRole: {
+  role: {
     type: String,
     enum: ["patient", "doctor"],
     default: "patient",
@@ -32,11 +32,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
+  Password: {
     type: String,
     required: true,
   },
-});
+
+},{
+  timestamps:true,
+}
+);
 
 const User = mongoose.model("User", userSchema);
 
