@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  customId: {
+
+  userId:{
     type: String,
     required: true,
     unique: true,
@@ -32,15 +33,29 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  Password: {
+  password: {
     type: String,
     required: true,
   },
-
-},{
-  timestamps:true,
-}
-);
+  isDoctor: {
+    type: Boolean,
+    default: false,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+  seenNottifications: {
+    type:Array,
+    default:[]
+  },
+  unseenNottifications: {
+    type:Array,
+    default:[]
+  }
+}, {
+  timestamps: true,
+});
 
 const User = mongoose.model("User", userSchema);
 
