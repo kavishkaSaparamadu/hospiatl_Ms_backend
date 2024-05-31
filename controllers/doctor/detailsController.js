@@ -2,6 +2,8 @@ const Doctor = require('../../models/doctor');
 const { Router } = require('express');
 const router = Router();
 
+
+
 // Controller to handle the doctor application submission
 router.post('/apply', async (req, res) => {
     try {
@@ -21,7 +23,7 @@ router.post('/apply', async (req, res) => {
         console.log('Request body:', req.body); // Log the request body
   
         // Validate required fields
-        if ( !firstName || !lastName || !email || !phoneNumber || !address || !specialization || !experience || !feePerConsultation || !timings || !availableDays) {
+        if (!firstName || !lastName || !email || !phoneNumber || !address || !specialization || !experience || !feePerConsultation || !timings || !availableDays) {
             return res.status(400).json({ message: 'All fields are required', success: false });
         }
   
@@ -48,7 +50,9 @@ router.post('/apply', async (req, res) => {
         res.status(500).json({ message: 'Server Error', success: false, error: error.message });
     }
 });
-//get doctor getails for the patient appointments page
+
+module.exports = router;
+
 // Route to fetch all doctor details
 router.get('/', async (req, res) => {
     try {

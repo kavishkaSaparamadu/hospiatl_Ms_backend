@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const doctorSchema = new mongoose.Schema(
     {
-       
         firstName: {
             type: String,
             required: true,
@@ -14,12 +13,12 @@ const doctorSchema = new mongoose.Schema(
         email: {
             type: String,
             required: true,
+            unique: true,
         },
         phoneNumber: {
             type: String,
             required: true,
         },
-       
         address: {
             type: String,
             required: true,

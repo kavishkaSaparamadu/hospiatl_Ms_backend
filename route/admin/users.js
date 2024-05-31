@@ -4,20 +4,6 @@ const User = require('../../models/user'); // Adjust the path as necessary
 const router = Router();
 const authMiddleware = require('../../middlewares/authMiddelware');
 const jwt = require('jsonwebtoken');
-const Doctor = require('../../models/doctor');
-
-const generateUserId = async (role) => {
-  let prefix = role === 'doctor' ? 'D' : 'P';
-  let userId;
-  let userExists = true;
-
-  while (userExists) {
-    userId = prefix + Math.floor(1000 + Math.random() * 9000); // Generate a 4-digit random number with the prefix
-    userExists = await User.findOne({ userId });
-  }
-
-  return userId;
-};
 
 // Route for registering a new user
 router.post('/register', async (req, res) => {
@@ -35,27 +21,11 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: 'User already exists' });
     }
 
-    // Find the latest user with the same prefix to determine the sequential number
-    const latestUser = await User.findOne({ role }).sort({ createdAt: -1 });
-
-    // Generate the sequential number
-    let seqNumber = 1;
-    if (latestUser && latestUser.userId) {
-      const latestSeqNumber = parseInt(latestUser.userId.substring(1)); // Extract the number part and convert to integer
-      if (!isNaN(latestSeqNumber)) {
-        seqNumber = latestSeqNumber + 1;
-      }
-    }
-
-    // Generate the userId with the prefix and sequential number
-    const userId = `${role.charAt(0)}${seqNumber.toString().padStart(4, '0')}`;
-
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the new user with the hashed password and custom ID
+    // Create the new user with the hashed password and role
     const newUser = new User({
-      userId,
       name,
       age,
       gender,
@@ -76,13 +46,10 @@ router.post('/register', async (req, res) => {
   }
 });
 
-
-
 // Route for logging in a user
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
 
     // Validate required fields
     if (!email || !password) {
@@ -103,7 +70,7 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d', // Corrected typo
+      expiresIn: '1d',
     });
 
     // Respond with token and user role
@@ -111,10 +78,9 @@ router.post('/login', async (req, res) => {
       success: true,
       message: 'Login successful',
       token,
-      userRole: user.role, // Assuming role is stored in the user document
+      userRole: user.role,
       name: user.name,
     });
-
   } catch (err) {
     console.error('Error logging in user:', err);
     res.status(500).json({ success: false, message: 'Error logging in user: ' + err.message });
@@ -124,7 +90,7 @@ router.post('/login', async (req, res) => {
 // Get User Info by ID Route
 router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id); // Corrected to use the ID from token payload
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(400).json({ message: "User does not exist", success: false });
     }
@@ -136,11 +102,9 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
         email: user.email,
       },
     });
-
   } catch (error) {
-    res.status(500).json({ message: "Error Getting User info", success: false, error });
+    res.status(500).json({ message: "Error getting user info", success: false, error });
   }
 });
-
 
 module.exports = router;
