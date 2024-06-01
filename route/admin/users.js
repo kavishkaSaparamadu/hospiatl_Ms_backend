@@ -105,6 +105,8 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error getting user info", success: false, error });
   }
+
+  
 });
 
 module.exports = router;

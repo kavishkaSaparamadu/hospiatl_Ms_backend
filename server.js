@@ -25,6 +25,9 @@ app.use('/api/doctor', doctorRoutes);
 const patientRoutes = require('./controllers/patient/appointmentController');
 app.use('/api/patient', patientRoutes);
 
+const patientProfileRoutes = require('./controllers/patient/detailsController');
+app.use('/api/patient/profile', patientProfileRoutes);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
