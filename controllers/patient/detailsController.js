@@ -1,28 +1,26 @@
-const express = require('express');
-const Patient = require('../../models/Patient');
+const express = require("express");
 const router = express.Router();
+const Patient = require('../../models/Patient'); // Adjust the path as necessary
 
-// Controller to handle the profile submission
-router.post('/profile', async (req, res) => {
+// Add a new patient
+router.post("/profile", async (req, res) => {
+  const {
+    name,
+    email,
+    bloodGroup,
+    age,
+    currentMedications,
+    otherChannelDoctors,
+    allergies,
+  } = req.body;
+
   try {
-    const {
-      name,
-      email,
-      bloodGroup,
-      age,
-      currentMedications,
-      otherChannelDoctors,
-      allergies,
-    } = req.body;
-
-    console.log('Request body:', req.body); // Log the request body
-
-    // Validate required fields
-    if (!name || !email || !bloodGroup || !age || !currentMedications || !otherChannelDoctors || !allergies) {
-      return res.status(400).json({ message: 'All fields are required', success: false });
+    // Check if email already exists
+    const existingPatient = await Patient.findOne({ email });
+    if (existingPatient) {
+      return res.status(400).json({ success: false, message: "Email already exists" });
     }
 
-    // Create a new patient profile
     const newPatient = new Patient({
       name,
       email,
@@ -33,27 +31,75 @@ router.post('/profile', async (req, res) => {
       allergies,
     });
 
-    // Save the profile to the database
     await newPatient.save();
-
-    res.status(201).json({ message: 'Your profile has been submitted successfully', success: true });
-  } catch (error) {
-    console.error('Error submitting patient profile:', error.message); // Log the error
-    res.status(500).json({ message: 'Server Error', success: false, error: error.message });
+    res.json({ success: true, message: "Patient Details Added" });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ success: false, message: "Error: " + err.message });
   }
 });
 
-// Route to fetch all patient details
-router.get('/', async (req, res) => {
+// Get all patients
+router.get("/", (req, res) => {
+  Patient.find()
+    .then(patients => {
+      res.json(patients);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).json({ success: false, message: "Error: " + err.message });
+    });
+});
+
+// Approve appointment
+router.post('/appointments/:id/approve', async (req, res) => {
   try {
-    const patients = await Patient.find();
-    if (!patients || patients.length === 0) {
-      return res.status(404).json({ message: 'No patients found', success: false });
+    const appointmentId = req.params.id;
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: 'Appointment not found' });
     }
-    res.status(200).json({ patients, success: true });
+
+    appointment.status = 'approved';
+    await appointment.save();
+
+    res.status(200).json({ success: true, message: 'Appointment approved' });
   } catch (error) {
-    console.error('Error fetching patients:', error.message);
-    res.status(500).json({ message: 'Server Error', success: false, error: error.message });
+    res.status(500).json({ success: false, message: 'Failed to approve appointment', error: error.message });
+  }
+});
+
+// Reject appointment
+router.post('/appointments/:id/reject', async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: 'Appointment not found' });
+    }
+
+    appointment.status = 'rejected';
+    await appointment.save();
+
+    res.status(200).json({ success: true, message: 'Appointment rejected' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to reject appointment', error: error.message });
+  }
+});
+
+// Get patient details by ID
+router.get('/patients/:id', async (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const patient = await Patient.findById(patientId);
+    if (!patient) {
+      return res.status(404).json({ success: false, message: 'Patient not found' });
+    }
+    res.status(200).json({ success: true, patient });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch patient details', error: error.message });
   }
 });
 

@@ -105,7 +105,26 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error getting user info", success: false, error });
   }
-
+  router.get('/patients', async (req, res) => {
+    try {
+      const patients = await User.find({ role: 'patient' });
+      res.status(200).json({ success: true, patients });
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+      res.status(500).json({ success: false, message: 'Error fetching patients' });
+    }
+  });
+  
+  // Route for fetching all doctors
+  router.get('/doctors', async (req, res) => {
+    try {
+      const doctors = await User.find({ role: 'doctor' });
+      res.status(200).json({ success: true, doctors });
+    } catch (error) {
+      console.error('Error fetching doctors:', error);
+      res.status(500).json({ success: false, message: 'Error fetching doctors' });
+    }
+  });
   
 });
 
