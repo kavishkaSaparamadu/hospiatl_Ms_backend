@@ -12,6 +12,16 @@ const appointmentSchema = new mongoose.Schema({
   patientName: {
     type: String,
     required: true
+  },
+  userDiseases: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    required: true,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
   }
 });
 

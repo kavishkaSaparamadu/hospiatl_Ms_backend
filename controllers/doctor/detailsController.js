@@ -54,7 +54,7 @@ router.post('/apply', async (req, res) => {
 module.exports = router;
 
 // Route to fetch all doctor details
-router.get('/', async (req, res) => {
+router.get('/applys', async (req, res) => {
     try {
         const doctors = await Doctor.find();
         if (!doctors || doctors.length === 0) {

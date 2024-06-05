@@ -40,7 +40,7 @@ router.post("/profile", async (req, res) => {
 });
 
 // Get all patients
-router.get("/", (req, res) => {
+router.get('/profilee', (req, res) => {
   Patient.find()
     .then(patients => {
       res.json(patients);
@@ -74,7 +74,7 @@ router.post('/appointments/:id/approve', async (req, res) => {
 router.post('/appointments/:id/reject', async (req, res) => {
   try {
     const appointmentId = req.params.id;
-    const appointment = await Appointment.findById(appointmentId);
+    const appointment = await appointment.findById(appointmentId);
 
     if (!appointment) {
       return res.status(404).json({ success: false, message: 'Appointment not found' });
@@ -90,7 +90,7 @@ router.post('/appointments/:id/reject', async (req, res) => {
 });
 
 // Get patient details by ID
-router.get('/patients/:id', async (req, res) => {
+router.get('/patient/:id', async (req, res) => {
   try {
     const patientId = req.params.id;
     const patient = await Patient.findById(patientId);

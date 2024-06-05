@@ -34,6 +34,8 @@ router.post('/register', async (req, res) => {
       password: hashedPassword,
       role: role || 'patient', // Default to 'patient' if role is not provided
       isDoctor: role === 'doctor', // Set isDoctor flag based on role
+      isAdmin: role === 'admin', // Set isAdmin
+      isPharmacist: role === 'Pharmacist', // Set isPharma
     });
 
     // Save the user to the database
@@ -125,6 +127,18 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
       res.status(500).json({ success: false, message: 'Error fetching doctors' });
     }
   });
+  router.get('/registers', async (req, res) => {
+    try {
+      const patients = await User.find({ role: 'patient' });
+      res.status(200).json({ success: true, patients });
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+      res.status(500).json({ success: false, message: 'Error fetching patients' });
+    }
+  });
+  
+ 
+
   
 });
 

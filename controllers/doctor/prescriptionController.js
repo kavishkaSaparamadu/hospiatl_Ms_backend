@@ -15,7 +15,7 @@ router.post('/prescription', async (req, res) => {
     });
 
     await newPrescription.save();
-    res.json({ success: true, message: 'Prescription Send successfully' });
+    res.json({ success: true, message: 'Prescription sent successfully' });
   } catch (err) {
     console.log(err);
     res.status(400).json({ success: false, message: 'Error: ' + err.message });
@@ -23,10 +23,21 @@ router.post('/prescription', async (req, res) => {
 });
 
 // Get all prescriptions
-router.get('/', async (req, res) => {
+router.get('/prescriptions', async (req, res) => {
   try {
     const prescriptions = await Prescription.find();
     res.json(prescriptions);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ success: false, message: 'Error: ' + err.message });
+  }
+});
+
+// Delete a prescription
+router.delete('/prescriptions/:id', async (req, res) => {
+  try {
+    await Prescription.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Prescription deleted successfully' });
   } catch (err) {
     console.log(err);
     res.status(400).json({ success: false, message: 'Error: ' + err.message });

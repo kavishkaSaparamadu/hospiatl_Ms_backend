@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["patient", "doctor"],
+    enum: ["patient", "doctor", "admin", "pharmacist"], // Fixed typo here
     default: "patient",
   },
   email: {
@@ -39,13 +39,17 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  seenNottifications: {
-    type:Array,
-    default:[]
+  isPharmacist: { // Fixed naming inconsistency
+    type: Boolean,
+    default: false,
   },
-  unseenNottifications: {
-    type:Array,
-    default:[]
+  seenNotifications: { // Fixed typo here
+    type: Array,
+    default: [],
+  },
+  unseenNotifications: { // Fixed typo here
+    type: Array,
+    default: [],
   }
 }, {
   timestamps: true,
