@@ -40,19 +40,9 @@ router.post("/profile", async (req, res) => {
 });
 
 // Get all patients
-router.get('/profilee', (req, res) => {
-  Patient.find()
-    .then(patients => {
-      res.json(patients);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(400).json({ success: false, message: "Error: " + err.message });
-    });
-});
 
 // Approve appointment
-router.post('/appointments/:id/approve', async (req, res) => {
+router.post('/appointments/', async (req, res) => {
   try {
     const appointmentId = req.params.id;
     const appointment = await Appointment.findById(appointmentId);
@@ -74,7 +64,7 @@ router.post('/appointments/:id/approve', async (req, res) => {
 router.post('/appointments/:id/reject', async (req, res) => {
   try {
     const appointmentId = req.params.id;
-    const appointment = await appointment.findById(appointmentId);
+    const appointment = await Appointment.findById(appointmentId);
 
     if (!appointment) {
       return res.status(404).json({ success: false, message: 'Appointment not found' });
@@ -90,17 +80,19 @@ router.post('/appointments/:id/reject', async (req, res) => {
 });
 
 // Get patient details by ID
-router.get('/patient/:id', async (req, res) => {
+router.get('/profiles/:id', async (req, res) => {
   try {
-    const patientId = req.params.id;
-    const patient = await Patient.findById(patientId);
+    const patientId = req.params.id; // Corrected from req.params.patientId
+    const patient = await Patient.findById(patientId); // Corrected from Appointment.find
     if (!patient) {
       return res.status(404).json({ success: false, message: 'Patient not found' });
     }
-    res.status(200).json({ success: true, patient });
+    res.status(200).json({ success: true, patient }); // Return patient details
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to fetch patient details', error: error.message });
   }
+
 });
+
 
 module.exports = router;

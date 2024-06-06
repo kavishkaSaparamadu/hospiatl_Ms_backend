@@ -31,8 +31,11 @@ app.use('/api/patients', patientProfileRoutes);
 const prescriptionRoutes = require('./controllers/doctor/prescriptionController');
 app.use('/api/doc', prescriptionRoutes);
 
+const feedbackRoures = require('./controllers/patient/feedbackController');
+app.use('/api/feedback', feedbackRoures);
 
-
+const guideController = require('./controllers/doctor/guidControlle');
+app.use('/api/guide', guideController);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
